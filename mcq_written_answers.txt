@@ -1,0 +1,93 @@
+Multiple Choice Question Answers:
+Q1: script src='script.js'
+Q2: alert('Hello World');
+Q3: if (i == 5)
+Q4: while (i <= 10)
+Q5: onclick
+Q6: var carName;
+Q7: =
+Q8: true
+Q9: Yes
+Q10: pop()
+Q11: ...
+Q12: An object representing the eventual completion or failure of an asynchronous operation
+Q13: JSON.stringify()
+Q14: function myFunction() {}
+Q15: do-while loop
+Q16: var obj = {}
+Q17: filter()
+Q18: Array.isArray(var)
+Q19: number
+Q20: //
+
+Written Question Answers:
+Q1: function reverseString(str) {
+  return str.split('').reverse().join('');
+}
+Q2: A closure is a function having access to the parent scope, even after the parent function has closed.
+Example:
+function outer() {
+  let outerVar = 'I am outer';
+  function inner() {
+    console.log(outerVar);
+  }
+  return inner;
+}
+let innerFunc = outer();
+innerFunc(); // I am outer
+Q3: function isPrime(num) {
+  if (num <= 1) return false;
+  for (let i = 2; i < num; i++) {
+    if (num % i === 0) return false;
+  }
+  return true;
+}
+Q4: 'let' has block scope, 'var' has function scope.
+Example:
+if (true) {
+  let blockVar = 'I am block scoped';
+  var funcVar = 'I am function scoped';
+}
+console.log(blockVar); // ReferenceError
+console.log(funcVar); // 'I am function scoped'
+Q5: function factorial(n) {
+  if (n === 0) return 1;
+  return n * factorial(n - 1);
+}
+Q6: 'this' refers to the object it belongs to.
+Example:
+const obj = {
+  name: 'Alice',
+  greet: function() {
+    console.log('Hello ' + this.name);
+  }
+};
+obj.greet(); // Hello Alice
+Q7: function mergeAndRemoveDuplicates(arr1, arr2) {
+  return [...new Set([...arr1, ...arr2])];
+}
+Q8: Event delegation allows handling events at a higher level in the DOM rather than at the individual node level.
+Example:
+document.getElementById('parent').addEventListener('click', function(event) {
+  if (event.target && event.target.matches('li.item')) {
+    console.log('List item clicked');
+  }
+});
+Q9: function sortArray(arr) {
+  return arr.sort((a, b) => a - b);
+}
+Q10: A promise represents the eventual completion or failure of an asynchronous operation.
+Example:
+let promise = new Promise(function(resolve, reject) {
+  // async operation
+  if (success) {
+    resolve('Success!');
+  } else {
+    reject('Failure');
+  }
+});
+promise.then(function(value) {
+  console.log(value); // Success!
+}).catch(function(error) {
+  console.log(error); // Failure
+});
