@@ -222,7 +222,7 @@
         mcqQuestions.forEach((q, index) => {
             const questionDiv = document.createElement('div');
             questionDiv.className = 'question';
-            questionDiv.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
+            questionDiv.innerHTML = `<strong><p>${index + 1}. ${q.question}</p></strong>`;
             const optionsDiv = document.createElement('div');
             optionsDiv.className = 'options';
             q.options.forEach((opt, optIndex) => {
@@ -238,13 +238,31 @@
 
         // Initialize Written Form
         const writtenForm = document.getElementById('written-form');
+        // writtenQuestions.forEach((q, index) => {
+        //     const questionDiv = document.createElement('div');
+        //     questionDiv.className = 'question';
+        //     questionDiv.innerHTML = `<p>${index + 1}. ${q}</p>`;
+        //     questionDiv.innerHTML += `<textarea name="written${index}" rows="6" cols="0" required></textarea>`;
+        //     writtenForm.appendChild(questionDiv);
+        // });
+
         writtenQuestions.forEach((q, index) => {
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'question';
-            questionDiv.innerHTML = `<p>${index + 1}. ${q}</p>`;
-            questionDiv.innerHTML += `<textarea name="written${index}" rows="4" cols="50" required></textarea>`;
-            writtenForm.appendChild(questionDiv);
-        });
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        questionDiv.innerHTML = `<strong>Q${index + 1}. ${q}</strong>`;
+        
+        const answerTextarea = document.createElement('textarea');
+        answerTextarea.name = `wq${index}`;
+        answerTextarea.rows = 6;
+        answerTextarea.style.width = '100%';
+        answerTextarea.style.boxSizing = 'border-box'; // Ensures padding and border are included in the element's total width and height
+        answerTextarea.style.border = '1px solid #ccc';
+        answerTextarea.style.borderRadius = '5px';
+        answerTextarea.style.padding = '10px';
+        
+        questionDiv.appendChild(answerTextarea);
+        writtenForm.appendChild(questionDiv);
+    });
 
         let time = 60 * 60; 
         const timerElement = document.createElement('div');
