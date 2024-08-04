@@ -43,14 +43,12 @@
     <div class="container">
         <div class="mcq-section" id="mcq-section">
             <h2>Multiple Choice Questions</h2>
-            <form id="mcq-form">
-            </form>
+            <form id="mcq-form"></form>
             <button class="submit-btn" onclick="submitMcq()">Submit and Proceed to Written Exam</button>
         </div>
         <div class="written-section" id="written-section" style="display: none;">
             <h2>Written Exam</h2>
-            <form id="written-form">
-            </form>
+            <form id="written-form"></form>
             <button class="submit-btn" onclick="submitWritten()">Submit Written Exam</button>
         </div>
         <div class="result-section" id="result-section" style="display: none;">
@@ -164,30 +162,6 @@
             }
         ];
 
-        function submitMcq() {
-            alert('Proceeding to the Written Exam.');
-            document.getElementById('mcq-section').style.display = 'none';
-            document.getElementById('written-section').style.display = 'block';
-        }
-
-        function submitWritten() {
-            alert('Submitting Written Exam.');
-            document.getElementById('written-section').style.display = 'none';
-            const mcqResultsDiv = document.getElementById('mcq-results');
-            const formData = new FormData(mcqForm);
-            let score = 0;
-            mcqQuestions.forEach((q, index) => {
-                const userAnswer = formData.get(`q${index}`);
-                if (userAnswer != null && parseInt(userAnswer) === q.answer) {
-                    score++;
-                }
-            });
-            clearInterval(timerInterval);
-            mcqResultsDiv.innerHTML = `<p>You scored ${score} out of ${mcqQuestions.length} in the MCQ section.</p>`;
-            document.getElementById('result-section').style.display = 'block';
-        }
-
-
         const writtenQuestions = [
             "Write a function in JavaScript to reverse a string.",
             "Explain closures in JavaScript with an example.",
@@ -201,32 +175,74 @@
             "Describe how promises work in JavaScript with an example."
         ];
 
+        function submitMcq() {
+            alert('Proceeding to the Written Exam.');
+            document.getElementById('mcq-section').style.display = 'none';
+            document.getElementById('written-section').style.display = 'block';
+        }
+
+        function submitWritten() {
+            alert('Submitting Written Exam.');
+            document.getElementById('written-section').style.display = 'none';
+            const mcqResultsDiv = document.getElementById('mcq-results');
+            const formData = new FormData(mcqForm);
+            let score = 0;
+            let mcqResponses = '';
+            mcqQuestions.forEach((q, index) => {
+                const userAnswer = formData.get(`q${index}`);
+                const isCorrect = userAnswer == q.answer;
+                if (isCorrect) {
+                    score++;
+                }
+                mcqResponses += `Question: ${q.question}\nSelected Option: ${q.options[userAnswer]}\nCorrect: ${isCorrect}\n\n`;
+            });
+
+            const writtenResponses = Array.from(new FormData(writtenForm)).map((entry, index) => {
+                return `Question: ${writtenQuestions[index]}\nAnswer: ${entry[1]}\n\n`;
+            }).join('');
+
+            const responses = `MCQ Responses:\n${mcqResponses}\nWritten Responses:\n${writtenResponses}`;
+
+            // Create a Blob with the responses
+            const blob = new Blob([responses], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'exam_responses.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            mcqResultsDiv.innerHTML = `<p>MCQ Score: ${score} out of ${mcqQuestions.length}</p>`;
+            document.getElementById('result-section').style.display = 'block';
+        }
+
+        // Initialize MCQ Form
         const mcqForm = document.getElementById('mcq-form');
         mcqQuestions.forEach((q, index) => {
             const questionDiv = document.createElement('div');
-            questionDiv.classList.add('question');
-            questionDiv.innerHTML = `<strong>Q${index + 1}. ${q.question}</strong>`;
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `<p>${index + 1}. ${q.question}</p>`;
             const optionsDiv = document.createElement('div');
-            optionsDiv.classList.add('options');
-            q.options.forEach((opt, i) => {
-                const optionLabel = document.createElement('label');
-                optionLabel.innerHTML = `<input type="radio" name="q${index}" value="${i}"> ${opt}`;
-                optionsDiv.appendChild(optionLabel);
+            optionsDiv.className = 'options';
+            q.options.forEach((opt, optIndex) => {
+                optionsDiv.innerHTML += `
+                    <label>
+                        <input type="radio" name="q${index}" value="${optIndex}" required>
+                        ${opt}
+                    </label>`;
             });
             questionDiv.appendChild(optionsDiv);
             mcqForm.appendChild(questionDiv);
         });
 
+        // Initialize Written Form
         const writtenForm = document.getElementById('written-form');
         writtenQuestions.forEach((q, index) => {
             const questionDiv = document.createElement('div');
-            questionDiv.classList.add('question');
-            questionDiv.innerHTML = `<strong>Q${index + 1}. ${q}</strong>`;
-            const answerTextarea = document.createElement('textarea');
-            answerTextarea.name = `wq${index}`;
-            answerTextarea.rows = 6;
-            answerTextarea.style.width = '100%';
-            questionDiv.appendChild(answerTextarea);
+            questionDiv.className = 'question';
+            questionDiv.innerHTML = `<p>${index + 1}. ${q}</p>`;
+            questionDiv.innerHTML += `<textarea name="written${index}" rows="4" cols="50" required></textarea>`;
             writtenForm.appendChild(questionDiv);
         });
 
@@ -258,6 +274,8 @@
             e.preventDefault();
             alert('Copying text is not allowed on this page.');
         });
+
+
     </script>
 </body>
 </html>
